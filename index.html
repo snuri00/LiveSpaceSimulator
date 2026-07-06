@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LIVESPACE · Orbital Tracking Console</title>
+  <style>
+    @font-face {
+      font-family: 'Share Tech Mono';
+      src: url('./fonts/ShareTechMono.ttf') format('truetype');
+      font-display: swap;
+    }
+  </style>
+  <link rel="stylesheet" href="./src/ui/hud.css" />
+</head>
+<body>
+  <canvas id="scene"></canvas>
+  <div id="hud">
+    <header id="hud-title">
+      <div id="brand">
+        <svg id="brand-orbit" viewBox="0 0 48 48">
+          <circle cx="24" cy="24" r="7" class="core" />
+          <g class="ring-a">
+            <ellipse cx="24" cy="24" rx="21" ry="8.5" />
+          </g>
+          <g class="ring-b">
+            <ellipse cx="24" cy="24" rx="21" ry="8.5" />
+          </g>
+          <g>
+            <circle class="orb" cx="45" cy="24" r="2.2" />
+            <animateTransform attributeName="transform" type="rotate" from="0 24 24" to="360 24 24" dur="6s" repeatCount="indefinite" />
+          </g>
+        </svg>
+        <div id="brand-text">
+          <div class="brand-name">LIVESPACE</div>
+          <div class="brand-sub">ORBITAL TRACKING CONSOLE · v1.0</div>
+        </div>
+      </div>
+      <div id="status-leds"></div>
+      <div class="src-line">SRC <span class="hl">JPL CNEOS · SBDB · SENTRY · CELESTRAK · DONKI · SWPC · LL2 · HORIZONS</span></div>
+      <div class="src-line" id="hud-stats"></div>
+      <div class="src-line" id="hud-clock"></div>
+      <button id="btn-audio">◌ AUDIO OFF</button>
+    </header>
+
+    <nav id="view-switch">
+      <button data-view="geo" class="active">GEO</button>
+      <button data-view="helio">HELIO</button>
+      <button data-view="craft">CRAFT</button>
+      <button data-view="imagery">IMAGERY</button>
+      <button id="btn-skin" title="Toggle Earth render">◱ WIRE</button>
+      <button id="btn-tour" title="Cinematic auto-tour">▷ TOUR</button>
+      <input id="search" type="text" placeholder="SEARCH OBJECT ⏎" spellcheck="false" autocomplete="off" />
+    </nav>
+
+    <aside id="left-col">
+      <section class="panel" id="panel-nearest">
+        <div class="panel-tab warn">NEAREST APPROACH</div>
+        <div class="panel-body" id="nearest-card">AWAITING CNEOS DATA…</div>
+      </section>
+      <section class="panel" id="panel-spacewx">
+        <div class="panel-tab">SPACE WEATHER</div>
+        <div class="panel-body" id="spacewx-card">AWAITING UPLINK…</div>
+      </section>
+      <section class="panel" id="panel-feed">
+        <div class="panel-tab">SOURCE / OBJECT FEED</div>
+        <div class="panel-body" id="feed-log"></div>
+      </section>
+      <section class="panel" id="panel-cad">
+        <div class="panel-tab alt">CLOSE-APPROACH STREAM</div>
+        <div class="panel-body" id="cad-table"></div>
+      </section>
+    </aside>
+
+    <section class="panel" id="panel-viewinfo">
+      <div class="panel-tab" id="viewinfo-tab">GEOCENTRIC EARTH MAP</div>
+      <div class="panel-body" id="view-info"></div>
+    </section>
+
+    <section id="imagery-view" class="hidden">
+      <div id="imagery-tabs">
+        <button data-src="sdo" class="active">☀ SOLAR · SDO LIVE</button>
+        <button data-src="apod">✦ APOD</button>
+      </div>
+      <div id="imagery-stage">
+        <div id="imagery-pan"><img id="big-img" alt="" /></div>
+        <div id="imagery-caption"></div>
+        <div id="imagery-hint">SCROLL · ZOOM | DRAG · PAN | DBL-CLICK · RESET</div>
+        <div id="sdo-channels"></div>
+        <div id="apod-nav" class="hidden">
+          <button id="apod-prev">‹ PREV</button>
+          <span id="apod-count">— / —</span>
+          <button id="apod-next">NEXT ›</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="panel-detail">
+      <div class="panel-tab warn">ASTEROID</div>
+      <div class="panel-body" id="detail-card"></div>
+      <button id="detail-close">✕</button>
+    </section>
+
+    <footer id="bottom-bar">
+      <div id="sat-key"></div>
+      <div id="craft-strip" class="hidden"></div>
+      <div id="timeline">
+        <button id="btn-play">▶</button>
+        <button id="btn-now">NOW</button>
+        <div id="rate-btns">
+          <button data-rate="1" class="active">1×</button>
+          <button data-rate="60">60×</button>
+          <button data-rate="3600">3600×</button>
+        </div>
+        <div id="timeline-track"><div id="timeline-cursor"></div></div>
+        <div id="mission-time"></div>
+      </div>
+    </footer>
+  </div>
+  <svg id="reticle-svg"><line id="reticle-line" /></svg>
+  <div id="reticle">
+    <div class="reticle-frame">
+      <span class="rc tl"></span><span class="rc tr"></span>
+      <span class="rc bl"></span><span class="rc br"></span>
+    </div>
+    <span id="reticle-label"></span>
+  </div>
+  <div id="crt-overlay"></div>
+  <div id="boot-overlay"><pre id="boot-lines"></pre></div>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
