@@ -2,6 +2,8 @@
 
 A browser-based space tracking console with a retro-CRT aesthetic, driven by live NASA/JPL data.
 
+![LIVESPACE — textured Earth with live satellites, a locked Starlink target, and the auroral oval](docs/screenshot.jpg)
+
 ## Running
 
 ```bash
