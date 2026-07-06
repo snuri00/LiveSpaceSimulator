@@ -252,6 +252,7 @@ function switchView(name) {
   const isImagery = name === 'imagery'
   imageryEl.classList.toggle('hidden', !isImagery)
   setViewTab(VIEW_TABS[name])
+  sceneMgr.setPaused(isImagery || document.hidden)
   if (isImagery) {
     imageryView.onShow()
     setSatKeyVisible(false)
@@ -267,6 +268,10 @@ function switchView(name) {
 
 document.querySelectorAll('#view-switch button[data-view]').forEach((b) =>
   b.addEventListener('click', () => switchView(b.dataset.view)))
+
+document.addEventListener('visibilitychange', () => {
+  sceneMgr.setPaused(document.hidden || state.activeView === 'imagery')
+})
 
 const _flyDir = new THREE.Vector3()
 const _flyDest = new THREE.Vector3()

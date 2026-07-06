@@ -42,15 +42,35 @@ const CRTShader = {
 
 export function createSceneManager(canvas) {
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' })
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+
+  const QUALITY_LEVELS = [
+    { pr: Math.min(window.devicePixelRatio, 1.75), bloom: true },
+    { pr: Math.min(window.devicePixelRatio, 1.25), bloom: true },
+    { pr: 1.0, bloom: true },
+    { pr: 0.85, bloom: false },
+    { pr: 0.7, bloom: false }
+  ]
+  let qualityLevel = 0
+  let autoQuality = true
+
+  renderer.setPixelRatio(QUALITY_LEVELS[0].pr)
   renderer.setSize(window.innerWidth, window.innerHeight)
 
   const composer = new EffectComposer(renderer)
   const renderPass = new RenderPass(new THREE.Scene(), new THREE.PerspectiveCamera())
   composer.addPass(renderPass)
-  composer.addPass(new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.6, 0.12))
+  const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2), 0.5, 0.6, 0.12)
+  composer.addPass(bloomPass)
   const crtPass = new ShaderPass(CRTShader)
   composer.addPass(crtPass)
+
+  function applyQuality(level) {
+    qualityLevel = Math.max(0, Math.min(QUALITY_LEVELS.length - 1, level))
+    const q = QUALITY_LEVELS[qualityLevel]
+    renderer.setPixelRatio(q.pr)
+    composer.setPixelRatio(q.pr)
+    bloomPass.enabled = q.bloom
+  }
 
   const views = []
   let active = null
@@ -100,6 +120,7 @@ export function createSceneManager(canvas) {
     }
     renderer.setSize(window.innerWidth, window.innerHeight)
     composer.setSize(window.innerWidth, window.innerHeight)
+    applyQuality(qualityLevel)
   })
 
   let tween = null
@@ -138,19 +159,51 @@ export function createSceneManager(canvas) {
   }
 
   let lastRenderMs = 0
+  let paused = false
+  let emaFrameMs = 16
+  let levelHoldMs = 0
+
+  function setPaused(p) {
+    paused = p
+    if (p) lastRenderMs = 0
+  }
+
+  function monitorQuality(frameMs) {
+    if (!autoQuality) return
+    emaFrameMs = emaFrameMs * 0.9 + frameMs * 0.1
+    levelHoldMs += frameMs
+    if (levelHoldMs < 900) return
+    if (emaFrameMs > 30 && qualityLevel < QUALITY_LEVELS.length - 1) {
+      applyQuality(qualityLevel + 1)
+      levelHoldMs = 0
+    } else if (emaFrameMs < 19 && qualityLevel > 0) {
+      applyQuality(qualityLevel - 1)
+      levelHoldMs = 0
+    }
+  }
 
   function render(timeSec, simDate) {
-    if (!active) return
+    if (!active || paused) return
     crtPass.uniforms.time.value = timeSec
     const nowMs = timeSec * 1000
-    const dt = lastRenderMs ? Math.min(0.05, (nowMs - lastRenderMs) / 1000) : 0.016
+    const frameMs = lastRenderMs ? nowMs - lastRenderMs : 16
+    const dt = lastRenderMs ? Math.min(0.05, frameMs / 1000) : 0.016
     lastRenderMs = nowMs
     stepTween(dt)
     if (!tween) tuneRotateSpeed(active)
     active.controls.update()
     active.update?.(simDate)
     composer.render()
+    monitorQuality(frameMs)
   }
 
-  return { renderer, createView, setActive, render, flyTo, cancelFly, isFlying: () => !!tween, getActive: () => active }
+  function setAutoQuality(on) {
+    autoQuality = on
+    if (!on) applyQuality(0)
+  }
+
+  return {
+    renderer, createView, setActive, render, flyTo, cancelFly, setPaused, setAutoQuality,
+    isFlying: () => !!tween, getActive: () => active, getQualityLevel: () => qualityLevel
+  }
 }
