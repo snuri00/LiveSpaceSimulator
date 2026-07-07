@@ -1,0 +1,21 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[[redirects]]
+  from = "/jpl-ssd/*"
+  to = "https://ssd-api.jpl.nasa.gov/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/jpl-horizons/*"
+  to = "https://ssd.jpl.nasa.gov/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/sdo/*"
+  to = "https://sdo.gsfc.nasa.gov/:splat"
+  status = 200
+  force = true
