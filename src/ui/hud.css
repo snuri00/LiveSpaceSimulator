@@ -232,6 +232,15 @@ html, body {
   opacity: 0.85;
 }
 
+.brand-by {
+  font-size: 9px;
+  letter-spacing: 0.42em;
+  color: var(--mint);
+  margin-top: 3px;
+  opacity: 0.75;
+  text-shadow: 0 0 6px rgba(87, 255, 201, 0.5);
+}
+
 #status-leds {
   display: flex;
   justify-content: flex-end;
