@@ -2,6 +2,8 @@
 
 A browser-based space tracking console with a retro-CRT aesthetic, driven by live NASA/JPL data.
 
+### 🚀 [Live demo → livespace-console.netlify.app](https://livespace-console.netlify.app)
+
 ![LIVESPACE — textured Earth with live satellites, a locked Starlink target, and the auroral oval](docs/screenshot.jpg)
 
 ## Running
