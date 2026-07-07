@@ -34,13 +34,13 @@ both the `dev` and `preview` commands include that proxy.)
 ## Features
 
 - **Search** -> Type a satellite name or asteroid designation and press Enter (e.g. "HUBBLE", "2026 NA").
-- **Cinematic camera** — Selecting any object flies the camera to it and keeps it framed
+- **Cinematic camera** -> Selecting any object flies the camera to it and keeps it framed
   (live tracking as it moves). A **TOUR** button auto-cycles a cinematic tour of highlights.
 - **Targeting HUD** -> Corner-bracket reticle that locks onto the selected object with a
   leader line to its data card.
 - **Satellite focus** -> Click any satellite point in GEO to lock it: name, NORAD ID, class,
   live altitude/velocity, period, inclination, and eccentricity. The full orbit ellipse is drawn.
-- **ISS** — Shown as a bright point with its ground track; selecting it resolves the real 3D model.
+- **ISS** -> Shown as a bright point with its ground track; selecting it resolves the real 3D model.
 - **Space weather panel** -> Live Kp index (NOAA SWPC), solar flares over the last 7 days,
   geomagnetic storm status (DONKI), and the next rocket launch (Launch Library 2).
 - **Time controls** -> 1× / 60× / 3600× rates plus a ±7-day timeline scrubber; every position
